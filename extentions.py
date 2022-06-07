@@ -22,3 +22,13 @@ def get_price(from_:str, to: str, amount: float):  #  дописать тип в
     # return f"На дату {result['date']} запрошенная сумма <b>{amount} {from_}</b> " \
     #         f"составляет:\n<b>{result['result']} {to}</b>\n" \
     #         f"по курсу {result['info']['rate']} {to} за 1 {from_}."
+
+class CurrencyNotFoundError(Exception):
+    """При отсутствии значения, указанного пользователем в списке валют"""
+    def __init__(self, currency: str):
+        self.message = f"Извините,валюты {currency} в списке не найдено"
+        # self.point = point
+        super().__init__(self.message)
+
+# class CurrencyNotFoundError(KeyError):
+#     pass

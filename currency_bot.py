@@ -100,9 +100,15 @@ def convert_currency(message):
 
 @bot.message_handler(content_types=['text'])
 def handle_from(message, amount):
-    from_ = currencies_complete[message.text]
-    bot.send_message(message.chat.id, 'Укажите целевую валюту')
-    bot.register_next_step_handler(message, handle_to, amount, from_)
+    try:
+        from_ = currencies_complete[message.text]
+    except KeyError as e:
+        # bot.reply_to(message, f"Валюта <b>\"{message.text}\"</b> в базе не обнаружена. "
+        #                       f"Попробуйте еще раз.", parse_mode='HTML')
+        bot.reply_to(message, f"<b>{e}</b>", parse_mode='HTML')
+    else:
+        bot.send_message(message.chat.id, 'Укажите целевую валюту')
+        bot.register_next_step_handler(message, handle_to, amount, from_)
 
 @bot.message_handler(content_types=['text'])
 def handle_to(message, amount, from_):
