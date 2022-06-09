@@ -151,7 +151,7 @@ def finalize(message, amount, from_, to):
 
 @bot.message_handler(content_types=['text'])
 def talk(message):
-    bot.send_message(message.chat.id, "Для начала работы нажмите или ввеите"
+    bot.send_message(message.chat.id, "Для начала работы нажмите или введите"
                                       " /start или /help или /convert")
 
 def start_bot():
