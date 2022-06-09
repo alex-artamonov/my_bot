@@ -160,3 +160,4 @@ def talk(message):
 def start_bot():
     """запуск бота"""
     bot.polling()
+    create_buttons()
