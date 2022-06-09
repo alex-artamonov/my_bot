@@ -16,12 +16,13 @@ currencies_complete = c.currencies.copy()
 for key, value in c.currencies.items():
     currencies_complete.update({value.lower(): value})
 
-conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-buttons = []
-for val in c.currencies.keys():
-    buttons.append(types.KeyboardButton(val.lower()))
+def create_buttons():
+    conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    buttons = []
+    for val in c.currencies.keys():
+        buttons.append(types.KeyboardButton(val.lower()))
 
-conv_markup.add(*buttons)
+    conv_markup.add(*buttons)
 
 
 @bot.message_handler(commands=['start', 'help', 'stop', 'valuta'])
@@ -55,7 +56,8 @@ def send_welcome(message):
 @bot.message_handler(commands=['convert'])
 def command_convert(message):
     bot.send_message(message.chat.id, "Введите <исходная валюта> в отдельной строке либо "
-                                      "<исходная валюта> <целевая валюта> <сумма> в одной строке:",)
+                                      "<исходная валюта> <целевая валюта> <сумма> в одной строке:",
+                     reply_markup=create_buttons())
     bot.register_next_step_handler(message, convert_currency)
 
 
@@ -157,6 +159,6 @@ def talk(message):
     bot.send_message(message.chat.id, "Для начала работы нажмите или ввеите"
                                       " /start или /help или /convert")
 
-
-"""запуск бота"""
-bot.polling()
+def start_bot():
+    """запуск бота"""
+    bot.polling()
