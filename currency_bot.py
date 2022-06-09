@@ -70,10 +70,8 @@ def convert_currency(message):
     # вариант для последовательного ввода значений:
     if len(list_to_parse) == 1:
         # если пользователь ввел
-        print("hi from case 1")
         try:
             from_ = c.currencies[list_to_parse[0]]
-            print(f"convert_currency {from_=}")
         except KeyError:
             bot.reply_to(message, f"Валюта <b>\"{to_input}\"</b> в базе не обнаружена."
                        f"\nПопробуйте еще раз, набрав или нажав /convert.", parse_mode='HTML')
@@ -109,7 +107,6 @@ def convert_currency(message):
 
 def handle_to(message, from_: str):
     """Обработка целевой валюты"""
-    print(f"from handle_to: {message.text=}")
     try:
         to = currencies_complete[message.text.lower()]
     except KeyError as e:
@@ -141,12 +138,10 @@ def finalize(message, amount, from_, to):
                 f"Даже на сайт лезть не буду!"
         bot.send_message(message.chat.id, reply, parse_mode='HTML')
         return
-    # print(f"{message.chat.id=}")
     try:
         date, result, rate = ext.get_price(from_, to, amount)
     except Exception as e:  # распарсить json ошибки!
         reply = f"Произошла ошибка:\n{e}"
-        # print('reply=', reply)
         bot.reply_to(message, reply)
     else:
         reply = f"На дату {date} запрошенная сумма <b>{amount} {from_}</b> " \
