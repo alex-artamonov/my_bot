@@ -144,8 +144,8 @@ def finalize(message, amount, from_, to):
         reply = f"Произошла ошибка:\n{e}"
         bot.reply_to(message, reply)
     else:
-        reply = f"На дату {date} запрошенная сумма <b>{amount} {from_}</b> " \
-                f"составляет:\n<b>{round(result, 2)} {to}</b>\n" \
+        reply = f"На дату {date} запрошенная сумма <b>{amount:.2f} {from_}</b> " \
+                f"составляет:\n<b>{round(result, 2):.2f} {to}</b>\n" \
                 f"по курсу {round(rate, 2):.2f} ({rate}) {to} за 1.00 {from_}."
         bot.send_message(message.chat.id, reply, parse_mode='HTML')
 
