@@ -110,8 +110,8 @@ def handle_to(message, from_: str):
     try:
         to = currencies_complete[message.text.lower()]
     except KeyError as e:
-        raise KeyError(f"Валюта <b>\"{message.text}\"</b> в базе не обнаружена."
-                       f"\nПопробуйте еще раз, набрав или нажав /convert.")
+        bot.reply_to(message.chat.id, f"Валюта <b>\"{message.text}\"</b> в базе не обнаружена."
+                       f"\nПопробуйте еще раз, набрав или нажав /convert.", parse_mode="HTML")
     else:
         bot.register_next_step_handler(message, handle_amount, from_, to)
         bot.send_message(message.chat.id, "Введите количество:")
