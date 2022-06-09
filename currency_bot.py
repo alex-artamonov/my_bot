@@ -47,7 +47,7 @@ def send_welcome(message):
         '/valuta': currencies_str
     }
     reply = replies[cmd]
-    bot.send_message(message.chat.id, reply)
+    bot.send_message(message.chat.id, reply, reply_markup=create_buttons())
     if cmd == '/stop':
         # bot.stop_bot()  # ВЫЗЫВАЕТ ОШИБКУ!
         exit()
