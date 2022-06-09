@@ -74,7 +74,9 @@ def convert_currency(message):
             from_ = currencies_complete[list_to_parse[0]]
         except KeyError:
             bot.reply_to(message, f"Валюта <b>\"{list_to_parse[0]}\"</b> в базе не обнаружена."
-                       f"\nПопробуйте еще раз, набрав или нажав /convert.", parse_mode='HTML')
+                       f"\nПопробуйте еще раз, набрав или нажав /convert."
+                                  f"nДля вывода списка валют наберите или нажмите /valuta",
+                         parse_mode='HTML')
         else:
             bot.send_message(message.chat.id, "Введите, в какую валюту хотите пересчитать:")
             bot.register_next_step_handler(message, handle_to, from_)
@@ -111,7 +113,8 @@ def handle_to(message, from_: str):
         to = currencies_complete[message.text.lower()]
     except KeyError as e:
         bot.reply_to(message, f"Валюта <b>\"{message.text}\"</b> в базе не обнаружена."
-                       f"\nПопробуйте еще раз, набрав или нажав /convert.", parse_mode="HTML")
+                       f"\nПопробуйте еще раз, набрав или нажав /convert."
+                              f"\nДля вывода списка валют наберите или нажмите /valuta", parse_mode="HTML")
     else:
         bot.register_next_step_handler(message, handle_amount, from_, to)
         bot.send_message(message.chat.id, "Введите количество:")
