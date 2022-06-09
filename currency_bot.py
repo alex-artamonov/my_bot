@@ -1,7 +1,7 @@
 import telebot
 import config as c
 import extentions as ext
-# from telebot import types
+from telebot import types
 
 
 bot = telebot.TeleBot(c.TOKEN)
@@ -16,13 +16,12 @@ currencies_complete = c.currencies.copy()
 for key, value in c.currencies.items():
     currencies_complete.update({value.lower(): value})
 
-# conv_markup = types.ReplyKeyboardMarkup()
-# buttons = []
-# for val in c.currencies.keys():
-#     buttons.append(types.KeyboardButton(val.upper()))
-#
-# conv_markup.add(*buttons)
+conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+buttons = []
+for val in c.currencies.keys():
+    buttons.append(types.KeyboardButton(val.lower()))
 
+conv_markup.add(*buttons)
 
 
 @bot.message_handler(commands=['start', 'help', 'stop', 'valuta'])
@@ -71,7 +70,8 @@ def convert_currency(message):
         # если пользователь ввел
         print("hi from case 1")
         try:
-            from_ = list_to_parse[0]
+            from_ = c.currencies[list_to_parse[0]]
+            print(f"convert_currency {from_=}")
         except KeyError:
             bot.reply_to(message, f"Валюта <b>\"{to_input}\"</b> в базе не обнаружена."
                        f"\nПопробуйте еще раз, набрав или нажав /convert.", parse_mode='HTML')
@@ -93,7 +93,7 @@ def convert_currency(message):
         to = currencies_complete[to_input]
         amount = float(amount_input.replace(",", "."))
     except ValueError as e:
-        bot.send_message(message.chat.id, f"Не удалось распознать сумму <b>{amount_input}</b>"
+        bot.reply_to(message, f"Не удалось распознать сумму <b>{amount_input}</b>"
                      f"\nПопробуйте еще раз, набрав или нажав /convert.", parse_mode="HTML")
     except KeyError as e:
         bot.reply_to(message, f"Валюта <b>\"{e}\"</b> в базе не обнаружена."
@@ -107,10 +107,11 @@ def convert_currency(message):
 
 def handle_to(message, from_: str):
     """Обработка целевой валюты"""
+    print(f"from handle_to: {message.text=}")
     try:
-        to = currencies_complete[message.text]
+        to = currencies_complete[message.text.lower()]
     except KeyError as e:
-        raise KeyError(f"Валюта <b>\"{to_input}\"</b> в базе не обнаружена."
+        raise KeyError(f"Валюта <b>\"{message.text}\"</b> в базе не обнаружена."
                        f"\nПопробуйте еще раз, набрав или нажав /convert.")
     else:
         bot.register_next_step_handler(message, handle_amount, from_, to)
@@ -122,8 +123,10 @@ def handle_amount(message, from_: str, to: str):
     try:
         amount = float(message.text.strip().replace(',','.'))
     except ValueError:
-        raise ValueError(f"Не удалось распознать сумму <b>{message.text}</b>"
-                         f"\nПопробуйте еще раз, набрав или нажав /convert.")
+        bot.reply_to(message, f"Не удалось распознать сумму <b>{message.text}</b>"
+                         f"\nПопробуйте еще раз, набрав или нажав /convert.", parse_mode="HTML" )
+        # raise ValueError(f"Не удалось распознать сумму <b>{message.text}</b>"
+        #                  f"\nПопробуйте еще раз, набрав или нажав /convert.")
     else:
         finalize(message, amount, from_, to)
 
