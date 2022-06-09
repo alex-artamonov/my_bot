@@ -75,7 +75,7 @@ def convert_currency(message):
         except KeyError:
             bot.reply_to(message, f"Валюта <b>\"{list_to_parse[0]}\"</b> в базе не обнаружена."
                        f"\nПопробуйте еще раз, набрав или нажав /convert."
-                                  f"nДля вывода списка валют наберите или нажмите /valuta",
+                                  f"\nДля вывода списка валют наберите или нажмите /valuta",
                          parse_mode='HTML')
         else:
             bot.send_message(message.chat.id, "Введите, в какую валюту хотите пересчитать:")
