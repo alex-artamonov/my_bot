@@ -17,7 +17,7 @@ for key, value in c.currencies.items():
     currencies_complete.update({value.lower(): value})
 
 def create_buttons():
-    conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=False)
     buttons = []
     for val in c.currencies.keys():
         buttons.append(types.KeyboardButton(val.lower()))
