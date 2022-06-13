@@ -10,19 +10,27 @@ bot = telebot.TeleBot(c.TOKEN)
 currencies_str = "Валюты, с которыми я умею работать:\n" + \
                 "\n".join(sorted(f"- {key} : {value}" for key, value in c.currencies.items()))
 
+
+# commands = ['/start', '/help', '/convert', '/valuta']
+
+
+
 # для удобства пользователя сформируем словарь так, чтобы можно было
 # указывать валюту и по-русски, и по коду валюты
 currencies_complete = c.currencies.copy()
 for key, value in c.currencies.items():
     currencies_complete.update({value.lower(): value})
 
+
+
 def create_buttons():
-    conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=False)
+    conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     buttons = []
     for val in c.currencies.keys():
         buttons.append(types.KeyboardButton(val.lower()))
 
     conv_markup.add(*buttons)
+    return conv_markup
 
 
 @bot.message_handler(commands=['start', 'help', 'stop', 'valuta'])
@@ -31,7 +39,8 @@ def send_welcome(message):
     name = message.chat.first_name
     replies = {
         '/start': f'Приветствую, {name}!. Я - небольшой калькулятор валют '
-                  f'на текущую дату. Для более подробной информации, введите /help',
+                  f'на текущую дату. \nНажмите или напишите /convert для конвертации.\n'
+                  f'Для более подробной информации, введите /help',
         '/help': f'Конвертирую (виртуально) из одной валюты в другую. Информация '
                  f'берется с сайта https://exchangerates.io.'
                  f'\nЧтобы пересчитать одну валюту в другую, введите запрос в формате'
@@ -47,7 +56,8 @@ def send_welcome(message):
         '/valuta': currencies_str
     }
     reply = replies[cmd]
-    bot.send_message(message.chat.id, reply, reply_markup=create_buttons())
+    # bot.register_next_step_handler(message, convert_currency)
+    bot.send_message(message.chat.id, reply)
     if cmd == '/stop':
         # bot.stop_bot()  # ВЫЗЫВАЕТ ОШИБКУ!
         exit()
@@ -78,13 +88,14 @@ def convert_currency(message):
                                   f"\nДля вывода списка валют наберите или нажмите /valuta",
                          parse_mode='HTML')
         else:
-            bot.send_message(message.chat.id, "Введите, в какую валюту хотите пересчитать:")
+            bot.send_message(message.chat.id, "Введите, в какую валюту хотите пересчитать:",
+                             reply_markup=create_buttons())
             bot.register_next_step_handler(message, handle_to, from_)
 
         return
     if len(list_to_parse) != 3:
         reply = "Извините, не понял - у меня маленький словарный запас и весьма" \
-                " ограниченный круг задач. \nПопробуйте еще раз. Для справки нажмите /start или /help." \
+                " ограниченный круг задач.\nПопробуйте еще раз. Для справки нажмите /start или /help." \
                 "\nЛибо /convert для пересчета из одной валюты в другую."
         bot.reply_to(message, reply)
         return
@@ -159,5 +170,6 @@ def talk(message):
 
 def start_bot():
     """запуск бота"""
+    # commands_buttons()
     bot.polling()
-    create_buttons()
+
