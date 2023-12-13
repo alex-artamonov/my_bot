@@ -2,9 +2,10 @@ import telebot
 import config as c
 import extentions as ext
 from telebot import types
+import os
 
-
-bot = telebot.TeleBot(c.TOKEN)
+TOKEN = os.environ["MONKEY"]
+bot = telebot.TeleBot(TOKEN)
 # username = 'my_test_parrot_bot'
 
 currencies_str = "Валюты, с которыми я умею работать:\n" + \
@@ -127,6 +128,11 @@ def handle_to(message, from_: str):
     """Обработка целевой валюты"""
     try:
         to = currencies_complete[message.text.lower()]
+        if from_ == to:
+            reply = "Целевая и исходная валюта одинаковы."
+            bot.send_message(message.chat.id, reply, parse_mode='HTML')
+            return
+
     except KeyError:
         bot.reply_to(message, f"Валюта <b>\"{message.text}\"</b> в базе не обнаружена."
                               f"\nПопробуйте еще раз, набрав или нажав /convert."
@@ -152,12 +158,6 @@ def handle_amount(message, from_: str, to: str):
 
 def finalize(message, amount, from_, to):
     """Передает собранные данные для функции запроса на сайт"""
-    if from_ == to:
-        reply = f"<b>{amount:.2f} {to} в {to}</b> в любой день и любую погоду будет " \
-                f"<b>{amount:.2f} {to}</b>.\n" \
-                f"Даже на сайт лезть не буду!"
-        bot.send_message(message.chat.id, reply, parse_mode='HTML')
-        return
     try:
         date, result, rate = ext.get_price(from_, to, amount)
     except Exception as e:  # распарсить json ошибки!

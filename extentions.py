@@ -1,11 +1,12 @@
 import config as c
 import requests
 import json
-
+import os
 
 def get_price(from_:str, to: str, amount: float):  #  дописать тип возврата
+    API_KEY = os.environ['APILAYER']
     headers = {
-        "apikey": c.API_KEY
+        "apikey": API_KEY
     }
     url = f"https://api.apilayer.com/exchangerates_data/convert?to={to}&from={from_}&amount={amount}"
     response = requests.request("GET", url, headers=headers)
