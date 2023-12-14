@@ -21,14 +21,15 @@ for key, value in c.currencies.items():
 
 
 def create_command_buttons():
-    commands_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    commands_markup = types.ReplyKeyboardMarkup(resize_keyboard=False)
     for command in commands:
         commands_markup.add(types.KeyboardButton(command))
     return commands_markup
 
 
-def create_buttons():
-    conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+def create_buttons(one_time_keyboard):
+    # conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    conv_markup = types.ReplyKeyboardMarkup(one_time_keyboard=one_time_keyboard)
     buttons = []
     for val in c.currencies.keys():
         buttons.append(types.KeyboardButton(val.lower()))
@@ -71,7 +72,7 @@ def send_welcome(message):
 def command_convert(message):
     bot.send_message(message.chat.id, "Введите <исходная валюта> в отдельной строке либо "
                                       "<исходная валюта> <целевая валюта> <сумма> в одной строке:",
-                     reply_markup=create_buttons())
+                     reply_markup=create_buttons(False))
     bot.register_next_step_handler(message, convert_currency)
 
 
@@ -93,7 +94,7 @@ def convert_currency(message):
                          parse_mode='HTML', reply_markup=create_command_buttons())
         else:
             bot.send_message(message.chat.id, "Введите, в какую валюту хотите пересчитать:",
-                             reply_markup=create_buttons())
+                             reply_markup=create_buttons(True))
             bot.register_next_step_handler(message, handle_to, from_)
 
         return
